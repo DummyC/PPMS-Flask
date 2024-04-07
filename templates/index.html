@@ -1,0 +1,40 @@
+{% extends 'base.html' %} 
+
+{% block head %}
+<title>BISU - PPMS</title>
+{% endblock %}
+
+{% block body %}
+<div class="content">
+    <h1 style="text-align: center">Project Procurement Monitoring System</h1>
+    {% if tasks|length < 1 %}
+    <h4 style="text-align: center"> No projects in the database, submit projects below</h4>
+    {% else %}
+
+    <table border = 1>
+        <tr>
+            <th>Project Name</th>
+            <th>Date Created</th>
+            <th>Actions</th>
+        </tr>
+        {% for project in projects %}
+            <tr>
+                <td>{{ project.content }}</td>
+                <td>{{ project.date_created.date() }}</td>
+                <td>
+                    <a href="/delete/{{project.id}}">Delete</a>
+                    <br>
+                    <a href="/update/{{project.id}}">Update</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+    <br>
+    <form action="/" method="POST">
+        <input type="text" name="content" id="content">
+        <input type="submit" value="Add Project">
+    </form>
+</div>
+
+{% endblock %}
