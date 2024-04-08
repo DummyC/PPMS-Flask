@@ -1,7 +1,8 @@
 from flask import render_template, url_for, request, redirect, flash
-from app import app, db
+from app import app, db, bcrypt
 from app.forms import RegistrationForm, LoginForm
 from app.models import User, Project
+from flask_login import login_user, current_user, logout_user, login_required
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
@@ -47,23 +48,50 @@ def update(id):
     else:
         return render_template('update.html', project = project, title='Update')
 
-
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        flash(f'Account created for {form.email.data} successfully', 'success')
-        return redirect(url_for('index'))
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user = User(first_name=form.first_name.data, last_name=form.last_name.data, email=form.email.data, password=hashed_password)
+        try:
+            db.session.add(user)
+            db.session.commit()
+        except:
+            flash(f'Email already exists', 'danger')
+            return redirect(url_for('register'))
+
+        
+        flash(f'Account created for {form.email.data} successfully, you are now able to log in', 'success')
+        return redirect(url_for('login'))
     
     return render_template('register.html', title='Register', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
-        if(form.email.data == 'example@example.com' and form.password.data == 'password'):
-            flash('Login success', 'success')
-            return redirect(url_for('index'))
+        user = User.query.filter_by(email=form.email.data).first()
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            login_user(user, remember=form.remember.data)
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('index'))
         else:
             flash('Login failed, incorrect email or password', 'danger')
     return render_template('login.html', title='Login', form=form)
+
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    flash('User logged out, please log in', 'info')
+    return redirect(url_for('login'))
+
+@app.route('/account')
+@login_required
+def account():
+    return render_template('account.html', title='Account')
