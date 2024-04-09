@@ -1,6 +1,6 @@
 from flask import render_template, url_for, request, redirect, flash
 from app import app, db, bcrypt
-from app.forms import RegistrationForm, LoginForm
+from app.forms import RegistrationForm, LoginForm, UpdateAccountForm
 from app.models import User, Project
 from flask_login import login_user, current_user, logout_user, login_required
 
@@ -55,7 +55,7 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(first_name=form.first_name.data, last_name=form.last_name.data, email=form.email.data, password=hashed_password)
+        user = User(first_name=form.first_name.data, last_name=form.last_name.data, department=form.department.data, email=form.email.data, password=hashed_password)
         try:
             db.session.add(user)
             db.session.commit()
@@ -91,7 +91,26 @@ def logout():
     flash('User logged out, please log in', 'info')
     return redirect(url_for('login'))
 
-@app.route('/account')
+@app.route('/account', methods=['GET', 'POST'])
 @login_required
 def account():
-    return render_template('account.html', title='Account')
+    form = UpdateAccountForm()
+    if form.validate_on_submit():
+        current_user.first_name = form.first_name.data
+        current_user.last_name = form.last_name.data
+        current_user.department = form.department.data
+        current_user.email = form.email.data
+        
+        try:
+            db.session.commit()
+            flash(f'Account updated successfully', 'success')
+        except:
+            flash(f'Error updating account information', 'danger')
+            
+        return redirect(url_for('account'))
+    elif request.method == 'GET':
+        form.first_name.data = current_user.first_name
+        form.last_name.data = current_user.last_name
+        form.department.data = current_user.department
+        form.email.data = current_user.email
+    return render_template('account.html', title='Account', form=form)

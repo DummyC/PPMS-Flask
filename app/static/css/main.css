@@ -1,7 +1,7 @@
 body {
     background: #fafafa;
     color: #333333;
-    margin-top: 5rem;
+    margin-top: 10rem;
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -73,6 +73,12 @@ body {
     width: 125px;
     margin-right: 20px;
     margin-bottom: 16px;
+  }
+
+  .logo-img {
+    height: 80px;
+    width: 80px;
+    margin-right: 20px;
   }
   
   .account-heading {
