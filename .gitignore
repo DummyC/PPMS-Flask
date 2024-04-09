@@ -1,3 +1,4 @@
 # ignore all db files
 *.db
 *.log
+*.code-workspace
