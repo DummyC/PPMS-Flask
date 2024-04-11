@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+    <article class="media content-section">
+        <div class="media-body">
+            <div class="article-metadata">
+                <p style="font-size:200%;" class="mr-2"><strong>{{ project.submitter.department }}</strong></p>
+                <small class="text-muted">{{ project.date_created.strftime('%Y-%m-%d') }}</small>
+                <p class="mr-2">Status: {{ project.status }}</p>
+                {% if project.submitter == current_user %}
+                <div>
+                    <a class="btn btn-outline-secondary btn-sm mt-1 mb-1" href="{{ url_for('update_project', project_id=project.id) }}">Update</a>
+                    <button type="button" class="btn btn-outline-danger btn-sm m-1" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+                </div>
+                {% endif %}
+            </div>
+            <h2 class="article-title">{{ project.title }}</h2>
+            <p class="article-content">{{ project.description }}</p>
+            <p class="article-content">Budget: {{ project.budget }}</p>
+            <p class="article-content">Mode of Procurement: {{ project.initial_mode }}</p>
+            <p class="article-content">Date Needed: {{ project.date_needed.date() }}</p>
+            <p class="article-content">Source of Fund: {{ project.source }}</p>
+            <p class="article-content">Category: {{ project.category }}</p>
+        </div>
+    </article>
+
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Delete Confimation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this project?</p>
+            </div>
+            <div class="modal-footer">
+                <form action="{{ url_for('delete_project', project_id=project.id) }}" method="POST">
+                    <input type="submit" class="btn btn-danger" value="Delete">
+                </form>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+        </div>
+    </div>
+  
+
+{% endblock %}

@@ -5,39 +5,37 @@
 
 {% block body %}
 <div class="content">
-    {% if projects|length < 1 %}
-    <h4 style="text-align: center"> No projects in the database, submit projects below</h4>
-    {% else %}
 
-    <table border = 1>
-        <tr>
-            <th>Project Name</th>
-            <th>Budget</th>
-            <th>Date Created</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
+    <a href="{{ url_for('create_project') }}" class="btn btn-outline-success m-2">New Project</a>
+    <table class="table table-hover">
+        <thead>
+            <tr class="table-primary">
+                <th scope="col">ID</th>
+                <th scope="col">Project Title</th>
+                <th scope="col">Budget</th>
+                <th scope="col">Mode of Procurement</th>
+                <th scope="col">Date Needed</th>
+                <th scope="col">Source of Fund</th>
+                <th scope="col">Category</th>
+                <th scope="col">Date Created</th>
+                <th scope="col">Status</th>
+            </tr>
+          </thead>
+        
         {% for project in projects %}
-            <tr>
-                <td>{{ project.title }}</td>
+            <tr class="table-secondary">
+                <td>{{ project.id }}</td>
+                <td><a href="{{ url_for('project', project_id=project.id)}}">{{ project.title }}</a></td>
                 <td>{{ project.budget }}</td>
+                <td>{{ project.initial_mode }}</td>
+                <td>{{ project.date_needed.date() }}</td>
+                <td>{{ project.source }}</td>
+                <td>{{ project.category }}</td>
                 <td>{{ project.date_created.date() }}</td>
                 <td>{{ project.status }}</td>
-                <td>
-                    <a href="/delete/{{project.id}}">Delete</a>
-                    <br>
-                    <a href="/update/{{project.id}}">Update</a>
-                </td>
             </tr>
         {% endfor %}
     </table>
-    {% endif %}
-    <br>
-    <form action="/" method="POST">
-        <label for="title">Project title:</label><br>
-        <input type="text" name="title" id="title">
-        <input type="submit" value="Add Project">
-    </form>
 </div>
 
 {% endblock %}

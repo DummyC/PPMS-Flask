@@ -1,52 +1,72 @@
-from flask import render_template, url_for, request, redirect, flash
+from flask import render_template, url_for, request, redirect, flash, abort
 from app import app, db, bcrypt
-from app.forms import RegistrationForm, LoginForm, UpdateAccountForm
+from app.forms import RegistrationForm, LoginForm, UpdateAccountForm, ProjectForm
 from app.models import User, Project
 from flask_login import login_user, current_user, logout_user, login_required
 
 @app.route('/', methods=['POST', 'GET'])
+@app.route('/projects', methods=['POST', 'GET'])
+@login_required
 def index():
-    if request.method == 'POST':
-        project_title = request.form['title']
-        new_project = Project(title=project_title)
-        
-        try:
-            db.session.add(new_project)
-            db.session.commit()
-            return redirect(url_for('index'))
-        except:
-            return 'Error adding project'
-        
-    else:
-        projects = Project.query.order_by(Project.date_created).all()
-        return render_template('index.html', projects = projects, title='Home')
+    projects = Project.query.order_by(Project.date_created).filter_by(submitter=current_user)
+    return render_template('index.html', projects = projects, title='Home')
     
-@app.route('/delete/<int:id>')
-def delete(id):
-    project_to_delete = Project.query.get_or_404(id)
-    
+@app.route('/project/<int:project_id>/delete', methods=['POST'])
+def delete_project(project_id):
+    project = Project.query.get_or_404(project_id)
+    if project.submitter != current_user:
+        abort(403)
     try:
-        db.session.delete(project_to_delete)
+        db.session.delete(project)
         db.session.commit()
-        return redirect(url_for('index'))
+        flash('Project deleted successfully', 'success')
     except:
-        return 'Error deleting project'
+        flash('Error deleting project', 'success')
+    return redirect(url_for('index'))
     
-@app.route('/update/<int:id>', methods=['GET', 'POST'])
-def update(id):
-    project = Project.query.get_or_404(id)
+@app.route('/project/<int:project_id>')
+def project(project_id):
+    project = Project.query.get_or_404(project_id)
+    if project.submitter != current_user:
+        abort(403)
     
-    if request.method == 'POST':
-        project.title = request.form['title']
-        project.budget = request.form['budget']
+    return render_template('project.html', title=project.title, project=project)
+    
+@app.route('/project/<int:project_id>/update', methods=['GET', 'POST'])
+@login_required
+def update_project(project_id):
+    project = Project.query.get_or_404(project_id)
+    if project.submitter != current_user:
+        abort(403)
+    form = ProjectForm()
+    
+    if form.validate_on_submit():
+        project.title = form.title.data
+        project.description = form.description.data
+        project.budget = form.budget.data
+        project.initial_mode = form.initial_mode.data
+        project.date_needed = form.date_needed.data
+        project.source = form.source.data
+        project.category = form.category.data
         
         try:
             db.session.commit()
-            return redirect(url_for('index'))
+            flash('Project updated successfully', 'success')
         except:
-            return "Error updating project"
-    else:
-        return render_template('update.html', project = project, title='Update')
+            flash('Error updating account information', 'danger')
+
+        return redirect(url_for('project', project_id=project.id))
+    
+    elif request.method == 'GET':
+        form.title.data = project.title
+        form.description.data = project.description
+        form.budget.data = project.budget
+        form.initial_mode.data = project.initial_mode
+        form.date_needed.data = project.date_needed
+        form.source.data = project.source
+        form.category.data = project.category
+
+    return render_template('edit_project.html', title='Update Project', form=form, legend='Update Project')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -60,7 +80,7 @@ def register():
             db.session.add(user)
             db.session.commit()
         except:
-            flash(f'Email already exists', 'danger')
+            flash('Email already exists', 'danger')
             return redirect(url_for('register'))
 
         
@@ -86,6 +106,7 @@ def login():
 
 
 @app.route('/logout')
+@login_required
 def logout():
     logout_user()
     flash('User logged out, please log in', 'info')
@@ -103,9 +124,9 @@ def account():
         
         try:
             db.session.commit()
-            flash(f'Account updated successfully', 'success')
+            flash('Account updated successfully', 'success')
         except:
-            flash(f'Error updating account information', 'danger')
+            flash('Error updating account information', 'danger')
             
         return redirect(url_for('account'))
     elif request.method == 'GET':
@@ -114,3 +135,20 @@ def account():
         form.department.data = current_user.department
         form.email.data = current_user.email
     return render_template('account.html', title='Account', form=form)
+
+
+@app.route('/projects/new', methods=['GET', 'POST'])
+@login_required
+def create_project():
+    form = ProjectForm()
+    if form.validate_on_submit():
+        project = Project(title=form.title.data, description=form.description.data, budget=form.budget.data, initial_mode=form.initial_mode.data, date_needed=form.date_needed.data, source=form.source.data, category=form.category.data, submitter=current_user)
+        try:
+            db.session.add(project)
+            db.session.commit()
+        except:
+            flash('Error creating project', 'danger')
+            return redirect(url_for('create_project'))
+        flash('Project created successfully', 'success')
+        return redirect(url_for('index'))
+    return render_template('edit_project.html', title='New Project' , form=form, legend='New Project')
