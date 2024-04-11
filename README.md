@@ -1,3 +1,36 @@
 # Project Procurement Monitoring System
 
-schoo project
+schoo project full of jank
+built with flask and bootstrap
+
+## Setup Environment (on leenoox)
+
+install python3 and virtualenv
+
+'''
+apt install python3
+pip3 install virtualenv
+'''
+
+clone the repo & cd
+'''
+git clone https://github.com/DummyC/PPMS-Flask.git && cd PPMS-Flask
+'''
+
+initialize venv and source activate script
+'''
+virtualenv env
+source env/bin/activate
+'''
+
+get dependencies
+'''
+pip3 install -r requirements.txt
+'''
+
+run app
+'''
+python3 run.py
+'''
+
+nyenyenyenyen
