@@ -12,6 +12,8 @@
         <link href="https://bootswatch.com/5/lux/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
 
+        <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+
         {% block head %}{% endblock %}
         {% if title %}
             <title>BISU PPMS - {{ title }}</title>

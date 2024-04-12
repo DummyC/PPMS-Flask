@@ -151,4 +151,6 @@ def create_project():
             return redirect(url_for('create_project'))
         flash('Project created successfully', 'success')
         return redirect(url_for('index'))
+    
+    form.budget.data = '0.00'
     return render_template('edit_project.html', title='New Project' , form=form, legend='New Project')
