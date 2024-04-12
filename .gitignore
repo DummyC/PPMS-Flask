@@ -2,3 +2,5 @@
 *.db
 *.log
 *.code-workspace
+
+__pycache__/
