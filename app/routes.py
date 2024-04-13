@@ -11,18 +11,6 @@ def index():
     projects = Project.query.order_by(Project.date_created).filter_by(submitter=current_user)
     return render_template('index.html', projects = projects, title='Home')
     
-@app.route('/project/<int:project_id>/delete', methods=['POST'])
-def delete_project(project_id):
-    project = Project.query.get_or_404(project_id)
-    if project.submitter != current_user:
-        abort(403)
-    try:
-        db.session.delete(project)
-        db.session.commit()
-        flash('Project deleted successfully', 'success')
-    except:
-        flash('Error deleting project', 'success')
-    return redirect(url_for('index'))
     
 @app.route('/project/<int:project_id>')
 def project(project_id):
@@ -32,6 +20,24 @@ def project(project_id):
     
     return render_template('project.html', title=project.title, project=project)
     
+@app.route('/projects/new', methods=['GET', 'POST'])
+@login_required
+def create_project():
+    form = ProjectForm()
+    if form.validate_on_submit():
+        project = Project(title=form.title.data, description=form.description.data, budget=form.budget.data, initial_mode=form.initial_mode.data, date_needed=form.date_needed.data, source=form.source.data, category=form.category.data, submitter=current_user)
+        try:
+            db.session.add(project)
+            db.session.commit()
+        except:
+            flash('Error creating project', 'danger')
+            return redirect(url_for('create_project'))
+        flash('Project created successfully', 'success')
+        return redirect(url_for('index'))
+    
+    form.budget.data = 0.00
+    return render_template('edit_project.html', title='New Project' , form=form, legend='New Project')
+
 @app.route('/project/<int:project_id>/update', methods=['GET', 'POST'])
 @login_required
 def update_project(project_id):
@@ -67,6 +73,19 @@ def update_project(project_id):
         form.category.data = project.category
 
     return render_template('edit_project.html', title='Update Project', form=form, legend='Update Project')
+
+@app.route('/project/<int:project_id>/delete', methods=['POST'])
+def delete_project(project_id):
+    project = Project.query.get_or_404(project_id)
+    if project.submitter != current_user:
+        abort(403)
+    try:
+        db.session.delete(project)
+        db.session.commit()
+        flash('Project deleted successfully', 'success')
+    except:
+        flash('Error deleting project', 'success')
+    return redirect(url_for('index'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -137,20 +156,4 @@ def account():
     return render_template('account.html', title='Account', form=form)
 
 
-@app.route('/projects/new', methods=['GET', 'POST'])
-@login_required
-def create_project():
-    form = ProjectForm()
-    if form.validate_on_submit():
-        project = Project(title=form.title.data, description=form.description.data, budget=form.budget.data, initial_mode=form.initial_mode.data, date_needed=form.date_needed.data, source=form.source.data, category=form.category.data, submitter=current_user)
-        try:
-            db.session.add(project)
-            db.session.commit()
-        except:
-            flash('Error creating project', 'danger')
-            return redirect(url_for('create_project'))
-        flash('Project created successfully', 'success')
-        return redirect(url_for('index'))
-    
-    form.budget.data = 0.00
-    return render_template('edit_project.html', title='New Project' , form=form, legend='New Project')
+

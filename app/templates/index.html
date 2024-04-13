@@ -4,38 +4,48 @@
 {% endblock %}
 
 {% block body %}
-<div class="content">
+<link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
 
+<div class="content">
     <a href="{{ url_for('create_project') }}" class="btn btn-outline-success m-2">New Project</a>
-    <table class="table table-hover">
-        <thead>
-            <tr class="table-primary">
-                <th scope="col">ID</th>
-                <th scope="col">Project Title</th>
-                <th scope="col">Budget</th>
-                <th scope="col">Mode of Procurement</th>
-                <th scope="col">Date Needed</th>
-                <th scope="col">Source of Fund</th>
-                <th scope="col">Category</th>
-                <th scope="col">Date Created</th>
-                <th scope="col">Status</th>
-            </tr>
-          </thead>
-        
-        {% for project in projects %}
-            <tr class="table-secondary">
-                <td>{{ project.id }}</td>
-                <td><a href="{{ url_for('project', project_id=project.id)}}">{{ project.title }}</a></td>
-                <td>{{ project.budget }}</td>
-                <td>{{ project.initial_mode }}</td>
-                <td>{{ project.date_needed.date() }}</td>
-                <td>{{ project.source }}</td>
-                <td>{{ project.category }}</td>
-                <td>{{ project.date_created.date() }}</td>
-                <td>{{ project.status }}</td>
-            </tr>
-        {% endfor %}
-    </table>
+    <div id="table"></div>
 </div>
+
+<script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
+    <script>
+      new gridjs.Grid({
+        columns: [
+          { id: 'id', name: 'ID' },
+          { id: 'title', name: 'Project Title' },
+          { id: 'budget', name: 'Budget'},
+          { id: 'initial_mode', name: 'Mode of Procurement'},
+          { id: 'date_needed', name: 'Date Needed' },
+          { id: 'source', name: 'Source of Fund' },
+          { id: 'category', name: 'Category' },
+          { id: 'date_created', name: 'Date Created' },
+          { id: 'status', name: 'Date Status' },
+        ],
+        data: [
+          {% for project in projects %}
+            {
+              id: '{{ project.id }}',
+              title: '{{ project.title }}',
+              budget: '{{ project.budget }}',
+              initial_mode: '{{ project.initial_mode }}',
+              date_needed: '{{ project.date_needed.date() }}',
+              source: '{{ project.source }}',
+              category: '{{ project.category }}',
+              date_created: '{{ project.date_created.date() }}',
+              status: '{{ project.status }}'
+            },
+          {% endfor %}
+        ],
+        search: {
+          selector: (cell, rowIndex, cellIndex) => [0, 1, 8].includes(cellIndex) ? cell : null,
+        },
+        sort: true,
+        pagination: true,
+      }).render(document.getElementById('table'));
+    </script>
 
 {% endblock %}
