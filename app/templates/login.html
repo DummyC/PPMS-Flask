@@ -36,7 +36,7 @@
                     {{ form.password(class="form-control form-control-md") }}
                 {% endif %}
             </div>
-            <div class="form-check ml-1">
+            <div class="form-check mt-2">
                 {{ form.remember(class="form-check-input") }}
                 {{ form.remember.label(class="form-check-label") }}
             </div>
@@ -44,13 +44,13 @@
         <div class="form-group mt-3">
             {{ form.submit(class="btn btn-outline-info") }}
             <small class="text-muted ml-2">
-                <a href="{{ url_for('reset_request') }}">Forgot Password?</a>
+                <a href="{{ url_for('users.reset_request') }}">Forgot Password?</a>
             </small>
         </div>
     </form>
     <div class="border-top pt-3">
         <small class="text-muted">
-            Need an account? <a class="ml-2" href="{{ url_for('register') }}">Register</a>
+            Need an account? <a class="ml-2" href="{{ url_for('users.register') }}">Register</a>
         </small>
     </div>
 
