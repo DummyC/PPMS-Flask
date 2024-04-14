@@ -15,11 +15,11 @@ class RegistrationForm(FlaskForm):
     
     submit = SubmitField('Register')
     
-    # def validate_email(self, email):
-    #     user = User.query.filter_by(email=email.data).first()
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
         
-    #     if user:
-    #         raise ValidationError('Email already exists in the database')
+        if user:
+            raise ValidationError('Email already exists in the database')
     
     
 class LoginForm(FlaskForm):
@@ -77,3 +77,18 @@ class ProjectForm(FlaskForm):
     category = StringField('Category', validators=[DataRequired()])
     
     submit = SubmitField('Submit')
+    
+class RequestResetForm(FlaskForm):
+    email = StringField('Email Address', validators=[DataRequired(), Length(min=5, max=100), Email()])
+    submit = SubmitField('Request Password Reset')
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user is None:
+            raise ValidationError('Email does not exist in the database')
+            
+class PasswordResetForm(FlaskForm):
+    password = PasswordField('Password', validators=[DataRequired()])
+    password_confirmation = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    
+    submit = SubmitField('Reset Password')
