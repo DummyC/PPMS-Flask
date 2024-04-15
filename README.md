@@ -28,6 +28,13 @@ get dependencies
 pip3 install -r requirements.txt
 ```
 
+setup environment variables (your method of choice)
+```
+export SECRET_KEY='your-key-here'
+export MAIL_SERVER_EMAIL='your-email-here'
+export MAIL_SERVER_PASSWORD='your-password-here'
+```
+
 run app
 ```
 python3 run.py
