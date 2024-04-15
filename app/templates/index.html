@@ -4,26 +4,64 @@
 {% endblock %}
 
 {% block body %}
+
+<div class="container">
+  <a href="{{ url_for('projects.create_project') }}" class="btn btn-outline-success m-2">New Project</a>
+  <table class="table table-hover">
+    <thead>
+      <tr class="table-primary">
+        <th>Title</th>
+        <th>Budget</th>
+        <th>Mode</th>
+        <th>Source of Fund</th>
+        <th>Category</th>
+        <th>Date Needed</th>
+        <th>Date Created</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for project in projects %}
+        <tr style='cursor: pointer; cursor: hand;' onclick="window.location='{{ url_for('projects.project', project_id=project.id) }}';">
+          <td>{{ project.title }}</td>
+          <td>{{ project.budget }}</td>
+          <td>{{ project.initial_mode }}</td>
+          <td>{{ project.source }}</td>
+          <td>{{ project.category }}</td>
+          <td>{{ project.date_needed.date() }}</td>
+          <td>{{ project.date_created.date() }}</td>
+          <td>{{ project.status }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
 <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
 
-<div class="container-fluid">
-    <a href="{{ url_for('projects.create_project') }}" class="btn btn-outline-success m-2">New Project</a>
+<div class="container">
     <div id="table"></div>
 </div>
+
+<!-- help, how do i make row clickable -->
 
 <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
     <script>
       new gridjs.Grid({
         columns: [
-          { id: 'id', name: 'ID' },
+          { id: 'id', name: 'ID', hidden: true },
           { id: 'title', name: 'Project Title' },
           { id: 'budget', name: 'Budget'},
-          { id: 'initial_mode', name: 'Mode of Procurement'},
-          { id: 'date_needed', name: 'Date Needed' },
+          { id: 'initial_mode', name: 'Mode'},
           { id: 'source', name: 'Source of Fund' },
           { id: 'category', name: 'Category' },
+          { id: 'date_needed', name: 'Date Needed' },
           { id: 'date_created', name: 'Date Created' },
-          { id: 'status', name: 'Date Status' },
+          { id: 'status', name: 'Status' },
+          { id: 'actions', name: 'Actions',
+              formatter: (_, row) =>
+                gridjs.html(`<a href="#" onclick="save( '${row.cells[0].data}');" target="_blank">Example</a>`)
+            }
         ],
         data: [
           {% for project in projects %}
@@ -32,9 +70,9 @@
               title: '{{ project.title }}',
               budget: '{{ project.budget }}',
               initial_mode: '{{ project.initial_mode }}',
-              date_needed: '{{ project.date_needed.date() }}',
               source: '{{ project.source }}',
               category: '{{ project.category }}',
+              date_needed: '{{ project.date_needed.date() }}',
               date_created: '{{ project.date_created.date() }}',
               status: '{{ project.status }}'
             },
@@ -42,6 +80,11 @@
         ],
         search: true,
         sort: true,
+        style: {
+          table: {
+            'font-size': '14px'
+          }
+        },
         pagination: true,
       }).render(document.getElementById('table'));
     </script>
