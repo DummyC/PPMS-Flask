@@ -45,7 +45,7 @@ def login():
             elif current_user.role == "Administrator":
                 return redirect(url_for('admins.admin_dashboard'))
             else:
-                redirect(url_for('projects.projects_list'))
+                return redirect(url_for('projects.projects_list'))
         else:
             flash('Login failed, incorrect email or password', 'danger')
     return render_template('login.html', title='Login', form=form)
