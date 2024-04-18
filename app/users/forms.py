@@ -36,26 +36,11 @@ class UpdateAccountForm(FlaskForm):
     department = StringField('Department Name', validators=[DataRequired(), Length(min=5, max=50)])
     email = StringField('Email Address', validators=[DataRequired(), Length(min=5, max=100), Email()])
     
+    password = PasswordField('Password', validators=[DataRequired()])
+    
     submit = SubmitField('Update')
     
-    def validate_first_name(self, first_name):
-        if first_name.data != current_user.first_name:
-            user = User.query.filter_by(first_name=first_name.data).first()
-            if user:
-                raise ValidationError('Email already exists in the database')
     
-    def validate_last_name(self, last_name):
-        if last_name.data != current_user.last_name:
-            user = User.query.filter_by(last_name=last_name.data).first()
-            if user:
-                raise ValidationError('Email already exists in the database')
-    
-    def validate_depart(self, department):
-        if department.data != current_user.department:
-            user = User.query.filter_by(department=department.data).first()
-            
-            if user:
-                raise ValidationError('Email already exists in the database')
 
     def validate_email(self, email):
         if email.data != current_user.email:
@@ -64,6 +49,13 @@ class UpdateAccountForm(FlaskForm):
             if user:
                 raise ValidationError('Email already exists in the database')
             
+class UpdatePasswordForm(FlaskForm):
+    current_password = PasswordField('Current Password', validators=[DataRequired()])
+    new_password = PasswordField('New Password', validators=[DataRequired()])
+    password_confirmation = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('new_password')])
+            
+    submit = SubmitField('Update')
+    
 class RequestResetForm(FlaskForm):
     email = StringField('Email Address', validators=[DataRequired(), Length(min=5, max=100), Email()])
     submit = SubmitField('Request Password Reset')
@@ -74,7 +66,7 @@ class RequestResetForm(FlaskForm):
             raise ValidationError('Email does not exist in the database')
             
 class PasswordResetForm(FlaskForm):
-    password = PasswordField('Password', validators=[DataRequired()])
+    password = PasswordField('New Password', validators=[DataRequired()])
     password_confirmation = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     
     submit = SubmitField('Reset Password')

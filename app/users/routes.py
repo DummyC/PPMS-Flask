@@ -2,7 +2,7 @@ from flask import render_template, url_for, flash, redirect, request, Blueprint
 from flask_login import login_user, current_user, logout_user, login_required
 from app import db, bcrypt
 from app.models import User, Project
-from app.users.forms import RegistrationForm, LoginForm, UpdateAccountForm, RequestResetForm, PasswordResetForm
+from app.users.forms import RegistrationForm, LoginForm, UpdateAccountForm, RequestResetForm, PasswordResetForm, UpdatePasswordForm
 from app.users.utils import send_reset_email
 
 users = Blueprint('users', __name__)
@@ -58,10 +58,11 @@ def logout():
 def account():
     form = UpdateAccountForm()
     if form.validate_on_submit():
-        current_user.first_name = form.first_name.data
-        current_user.last_name = form.last_name.data
-        current_user.department = form.department.data
-        current_user.email = form.email.data
+        if bcrypt.check_password_hash(current_user.password, form.password.data):
+            current_user.first_name = form.first_name.data
+            current_user.last_name = form.last_name.data
+            current_user.department = form.department.data
+            current_user.email = form.email.data
         
         try:
             db.session.commit()
@@ -77,6 +78,24 @@ def account():
         form.email.data = current_user.email
     return render_template('account.html', title='Account', form=form)
 
+@users.route('/update_password', methods=['GET', 'POST'])
+@login_required
+def update_password():
+    form = UpdatePasswordForm();
+    if form.validate_on_submit():
+        if bcrypt.check_password_hash(current_user.password, form.current_password.data):
+            new_hashed_password = bcrypt.generate_password_hash(form.new_password.data).decode('utf-8')
+            current_user.password = new_hashed_password
+        
+        try:
+            db.session.commit()
+            logout_user()
+            flash('Account password updated successfully, please login again', 'success')
+            return redirect(url_for('users.login'))
+        except:
+            flash('Error updating account password', 'danger')
+    return render_template('update_password.html', title='Update Password', form=form)
+        
 @users.route('/reset_password', methods=['GET', 'POST'])
 def reset_request():
     if current_user.is_authenticated:
