@@ -43,7 +43,7 @@ def create_project():
 @login_required
 def update_project(project_id):
     project = Project.query.get_or_404(project_id)
-    if project.submitter != current_user:
+    if project.submitter != current_user or project.status == "Approved":
         abort(403)
     form = ProjectForm()
     
@@ -78,7 +78,7 @@ def update_project(project_id):
 @projects.route('/project/<int:project_id>/delete', methods=['POST'])
 def delete_project(project_id):
     project = Project.query.get_or_404(project_id)
-    if project.submitter != current_user:
+    if project.submitter != current_user or project.status == "Approved":
         abort(403)
     try:
         db.session.delete(project)

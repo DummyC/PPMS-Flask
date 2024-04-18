@@ -10,7 +10,7 @@
                 <p style="font-size:200%;" class="mr-2"><strong>{{ project.submitter.department }}</strong></p>
                 <small class="text-muted">{{ project.date_created.strftime('%Y-%m-%d') }}</small>
                 <p class="mr-2">Status: {{ project.status }}</p>
-                {% if project.submitter == current_user %}
+                {% if project.submitter == current_user and project.status != "Approved" %}
                 <div>
                     <a class="btn btn-outline-secondary btn-sm mt-1 mb-1" href="{{ url_for('projects.update_project', project_id=project.id) }}">Update</a>
                     <button type="button" class="btn btn-outline-danger btn-sm m-1" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
