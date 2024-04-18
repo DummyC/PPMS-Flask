@@ -8,9 +8,9 @@ projects = Blueprint('projects', __name__)
 
 @projects.route('/projects', methods=['POST', 'GET'])
 @login_required
-def index():
+def projects_list():
     projects = Project.query.order_by(Project.date_created).filter_by(submitter=current_user)
-    return render_template('index.html', projects = projects, title='Projects')
+    return render_template('projects_list.html', projects = projects, title='Projects')
     
     
 @projects.route('/project/<int:project_id>')
@@ -34,7 +34,7 @@ def create_project():
             flash('Error creating project', 'danger')
             return redirect(url_for('projects.create_project'))
         flash('Project created successfully', 'success')
-        return redirect(url_for('projects.index'))
+        return redirect(url_for('projects.projects_list'))
     
     form.budget.data = 0.00
     return render_template('edit_project.html', title='New Project' , form=form, legend='New Project')
@@ -86,4 +86,4 @@ def delete_project(project_id):
         flash('Project deleted successfully', 'success')
     except:
         flash('Error deleting project', 'success')
-    return redirect(url_for('projects.index'))
+    return redirect(url_for('projects.projects_list'))

@@ -23,13 +23,17 @@ def create_app(config_class=Config):
     mail.init_app(app)
     
     from app.users.routes import users
+    from app.admin.routes import admins
     from app.projects.routes import projects
     from app.main.routes import main
     from app.errors.handlers import errors
 
+    app.register_blueprint(admins)
     app.register_blueprint(users)
     app.register_blueprint(projects)
     app.register_blueprint(main)
     app.register_blueprint(errors)
+    
+    
     
     return app

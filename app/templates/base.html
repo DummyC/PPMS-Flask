@@ -32,8 +32,13 @@
               </button>
               <div class="collapse navbar-collapse" id="navbarToggle">
                 <div class="navbar-nav mr-auto">
-                  <a class="nav-item nav-link" href="{{ url_for('projects.index') }}">Home</a>
-                  <a class="nav-item nav-link" href="{{ url_for('projects.index') }}">Projects</a>
+                  {% if current_user.role == "Administrator" %}
+                  <a class="nav-item nav-link" href="{{ url_for('admins.admin_dashboard') }}">Admin</a>
+                  <a class="nav-item nav-link" href="{{ url_for('admins.admin_projects') }}">Projects</a>
+                  {% else %}
+                  <a class="nav-item nav-link" href="{{ url_for('projects.projects_list') }}">Dashboard</a>
+                  <a class="nav-item nav-link" href="{{ url_for('projects.projects_list') }}">Projects</a>
+                  {% endif %}
                 </div>
                 <!-- Navbar Right Side -->
                 <div class="navbar-nav ml-auto">

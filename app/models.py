@@ -33,6 +33,8 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
     
+    role = db.Column(db.String(20), nullable=False, default="Head")
+    
     projects = db.relationship('Project', backref='submitter', lazy=True)
     
     def get_reset_token(self, expires_sec=1800):
@@ -49,3 +51,4 @@ class User(db.Model, UserMixin):
     
     def __repr__(self):
         return f"User('{self.first_name}', '{self.last_name}', '{self.email}')"
+    
