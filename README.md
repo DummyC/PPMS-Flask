@@ -46,5 +46,5 @@ nyenyenyenyen
 
 mockaroo sql for projects - https://www.mockaroo.com/8f524890
 ```
-curl "https://api.mockaroo.com/api/8f524890?count=1000&key=f2ca0260" > "project.sql"
+curl "https://api.mockaroo.com/api/8f524890?count=1000&key=null" > "project.sql"
 ```
