@@ -5,8 +5,8 @@ main = Blueprint('main', __name__)
 
 @main.route('/', methods=['POST', 'GET'])
 def home():
-    return render_template('base.html', title='Home')
+    return render_template('dashboard.html', title='Home')
 
 @main.route('/about', methods=['POST', 'GET'])
 def about():
-    return render_template('base.html', title='Home')
+    return render_template('about.html', title='Home')
