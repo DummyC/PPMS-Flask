@@ -4,7 +4,7 @@ from app.models import Project
 main = Blueprint('main', __name__)
 
 @main.route('/', methods=['POST', 'GET'])
-def home():
+def dashboard():
     return render_template('dashboard.html', title='Home')
 
 @main.route('/about', methods=['POST', 'GET'])

@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+    <div class="content-section">
+        <div class="media">
+        <img class="rounded-circle account-img" src="{{ url_for('static', filename='images/user_image.jpg') }}">
+        <div class="media-body">
+            <h2 class="account-heading">{{ user.first_name }} {{ user.last_name }}</h2>
+            <p class="text-primary"><strong>{{ user.department }}</strong></p>
+            <p class="text-secondary">{{ user.email }}</p>
+        </div>
+        <div class="content-section">
+            <form action="" method="POST">
+                {{ form.hidden_tag() }}
+                <fieldset class="form-group">
+                    <legend class="border-bottom mb-4">Account Information</legend>
+                    <div class="form-group">
+                        {{ form.first_name.label(class="form-control-label") }}
+        
+                        {% if form.first_name.errors %}
+                            {{ form.first_name(class="form-control form-control-md is-invalid")}}
+                            <div class="invalid-feedback">
+                                {% for error in form.first_name.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.first_name(class="form-control form-control-md") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.last_name.label(class="form-control-label") }}
+                        {% if form.last_name.errors %}
+                            {{ form.last_name(class="form-control form-control-md is-invalid")}}
+                            <div class="invalid-feedback">
+                                {% for error in form.last_name.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.last_name(class="form-control form-control-md") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.department.label(class="form-control-label") }}
+                        {% if form.department.errors %}
+                            {{ form.department(class="form-control form-control-md is-invalid")}}
+                            <div class="invalid-feedback">
+                                {% for error in form.department.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.department(class="form-control form-control-md") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.email.label(class="form-control-label") }}
+                        {% if form.email.errors %}
+                            {{ form.email(class="form-control form-control-md is-invalid")}}
+                            <div class="invalid-feedback">
+                                {% for error in form.email.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.email(class="form-control form-control-md") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.role.label(class="form-control-label") }}
+                        {% if form.role.errors %}
+                            {{ form.role(class="form-control form-control-md is-invalid")}}
+                            <div class="invalid-feedback">
+                                {% for error in form.role.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.role(class="form-control form-control-md") }}
+                        {% endif %}
+                    </div>
+                </fieldset>
+                <br>
+                <div class="form-group">
+                    {{ form.submit(class="btn btn-outline-info") }}
+                </div>
+            </form>
+            
+        </div>
+    </div>
+{% endblock %}

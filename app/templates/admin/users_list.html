@@ -1,0 +1,53 @@
+{% extends 'base.html' %} 
+
+{% block head %}
+{% endblock %}
+
+{% block table %}
+
+<link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
+
+<div class="container-fluid px-5">
+  <h1>Users</h1>
+  <a href="{{ url_for('admins.create_user') }}" class="btn btn-outline-success m-2">New User</a>
+  <div id="table"></div>
+</div>
+
+<!-- help, how do i make row clickable -->
+
+<script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
+<script type="text/javascript">
+  new gridjs.Grid({
+    columns: [
+      { id: 'id', name: 'ID', hidden: true },
+      { id: 'name', name: 'Name' },
+      { id: 'department', name: 'Department'},
+      { id: 'email', name: 'Email Address'},
+      { id: 'role', name: 'Role' },
+      { id: 'actions', name: 'Actions',
+        formatter: (_, row) => gridjs.html(`<a href='user/${row.cells[0].data}/update' class='btn btn-outline-info btn-sm'>Edit</a>`)
+      },
+    ],
+    data: [
+      {% for user in users %}
+        {
+          id: '{{ user.id }}',
+          name: '{{ user.last_name }}, {{ user.first_name }}',
+          department: '{{ user.department }}',
+          email: '{{ user.email }}',
+          role: '{{ user.role }}'
+        },
+      {% endfor %}
+    ],
+    search: true,
+    sort: true,
+    style: {
+      table: {
+        'font-size': '14px'
+      }
+    },
+    pagination: true,
+  }).render(document.getElementById('table'));
+</script>
+
+{% endblock %}

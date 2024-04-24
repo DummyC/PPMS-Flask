@@ -35,8 +35,9 @@
                   {% if current_user.role == "Administrator" %}
                   <a class="nav-item nav-link" href="{{ url_for('admins.admin_dashboard') }}">Admin</a>
                   <a class="nav-item nav-link" href="{{ url_for('admins.admin_projects') }}">Projects</a>
+                  <a class="nav-item nav-link" href="{{ url_for('admins.users_list') }}">Users</a>
                   {% else %}
-                  <a class="nav-item nav-link" href="{{ url_for('projects.projects_list') }}">Dashboard</a>
+                  <a class="nav-item nav-link" href="{{ url_for('main.dashboard') }}">Dashboard</a>
                   <a class="nav-item nav-link" href="{{ url_for('projects.projects_list') }}">Projects</a>
                   {% endif %}
                 </div>

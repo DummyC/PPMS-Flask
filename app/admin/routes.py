@@ -1,11 +1,12 @@
 from flask import render_template, url_for, flash, redirect, request, abort, Blueprint
 from flask_login import current_user, login_required
-from app import db
+from app import db, bcrypt
 from app.models import Project, User
-from app.admin.forms import ProjectStatusUpdateForm
+from app.admin.forms import ProjectStatusUpdateForm, CreateUserForm, UpdateUserForm
 
 admins = Blueprint('admins', __name__)
 
+# dashboard routes
 
 @admins.route('/admin', methods=['GET', 'POST'])
 @login_required
@@ -14,6 +15,8 @@ def admin_dashboard():
         return abort(403)
     
     return render_template('admin/dashboard.html', title='Admin Dashboard')
+
+# project routes
 
 @admins.route('/admin/projects', methods=['GET', 'POST'])
 @login_required
@@ -49,6 +52,7 @@ def admin_project(project_id):
     return render_template('admin/project.html', title=project.title, form=form, project=project)
 
 @admins.route('/admin/project/<int:project_id>/delete', methods=['POST'])
+@login_required
 def admin_delete_project(project_id):
     project = Project.query.get_or_404(project_id)
     if not current_user.role == "Administrator":
@@ -60,3 +64,70 @@ def admin_delete_project(project_id):
     except:
         flash('Error deleting project', 'success')
     return redirect(url_for('admins.admin_projects'))
+
+# user management routes
+
+@admins.route('/admin/users', methods=['POST', 'GET'])
+@login_required
+def users_list():
+    users = User.query.order_by(User.last_name).all()
+    if not current_user.role == "Administrator":
+        return abort(403)
+    
+    return render_template('admin/users_list.html', title='Users', users = users)
+
+@admins.route('/admin/users/create', methods=['POST', 'GET'])
+@login_required
+def create_user():
+    if not current_user.role == "Administrator":
+        return abort(403)
+    
+    form = CreateUserForm()
+    
+    if form.validate_on_submit():
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user = User(first_name=form.first_name.data, last_name=form.last_name.data, department=form.department.data, email=form.email.data, password=hashed_password, role=form.role.data)
+        try:
+            db.session.add(user)
+            db.session.commit()
+        except:
+            flash('Email already exists', 'danger')
+            return redirect(url_for('users.register'))
+
+        
+        flash(f'Account created for {form.email.data} successfully', 'success')
+        return redirect(url_for('admins.users_list'))
+    
+    return render_template('admin/create_user.html', title='Create User', form=form)
+
+@admins.route('/admin/user/<int:user_id>/update', methods=['POST', 'GET'])
+@login_required
+def update_user(user_id):
+    user = User.query.get_or_404(user_id)
+    if not current_user.role == "Administrator":
+        return abort(403)
+    
+    form = UpdateUserForm()
+    if form.validate_on_submit():
+        user.first_name = form.first_name.data
+        user.last_name = form.last_name.data
+        user.department = form.department.data
+        user.email = form.email.data
+        user.role = form.role.data
+        
+        try:
+            db.session.commit()
+            flash('User updated successfully', 'success')
+        except:
+            flash('Error updating account information', 'danger')
+            
+        return redirect(url_for('admins.users_list'))
+    elif request.method == 'GET':
+        form.first_name.data = user.first_name
+        form.last_name.data = user.last_name
+        form.department.data = user.department
+        form.email.data = user.email
+        form.role.data = user.role
+        
+    return render_template('admin/update_user.html', title='Update User', form=form, user=user)
+    
