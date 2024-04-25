@@ -85,5 +85,5 @@ def delete_project(project_id):
         db.session.commit()
         flash('Project deleted successfully', 'success')
     except:
-        flash('Error deleting project', 'success')
+        flash('Error deleting project', 'danger')
     return redirect(url_for('projects.projects_list'))

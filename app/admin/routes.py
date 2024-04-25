@@ -130,4 +130,18 @@ def update_user(user_id):
         form.role.data = user.role
         
     return render_template('admin/update_user.html', title='Update User', form=form, user=user)
+
+@admins.route('/admin/user/<int:user_id>/delete', methods=['POST'])
+@login_required
+def delete_user(user_id):
+    user = User.query.get_or_404(user_id)
+    if not current_user.role == "Administrator":
+        return abort(403)
     
+    try:
+        db.session.delete(user)
+        db.session.commit()
+        flash('User deleted successfully', 'success')
+    except:
+        flash('Error deleting user', 'danger')
+    return redirect(url_for('admins.users_list'))    
