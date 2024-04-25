@@ -1,8 +1,11 @@
-from flask import render_template, url_for, flash, redirect, request, abort, Blueprint
+from flask import render_template, url_for, flash, redirect, request, abort, send_file, Blueprint
 from flask_login import current_user, login_required
 from app import db, bcrypt
 from app.models import Project, User
 from app.admin.forms import ProjectStatusUpdateForm, CreateUserForm, UpdateUserForm
+from app.admin.utils import generate_app_xlsx
+from io import BytesIO
+import os
 
 admins = Blueprint('admins', __name__)
 
@@ -26,6 +29,25 @@ def admin_projects():
     
     projects = Project.query.order_by(Project.date_created).all()
     return render_template('admin/projects_list.html', projects = projects ,title='Submitted Projects')
+
+@admins.route('/admin/projects/generate', methods=['GET', 'POST'])
+@login_required
+def admin_generate_app():
+    if not current_user.role == "Administrator":
+        return abort(403)
+    
+    if os.path.exists("tmp/APP.xlsx"):
+        os.remove("tmp/APP.xlsx")
+    
+    projects = Project.query.order_by(Project.category).filter_by(status="Approved")
+    generate_app_xlsx(projects)
+    
+    with open("tmp/APP.xlsx", "rb") as file:
+        read = file.read()
+        buffer = BytesIO()
+        buffer.write(read)
+        buffer.seek(0)
+        return send_file(buffer, as_attachment=True, download_name="APP.xlsx")
 
 @admins.route('/admin/project/<int:project_id>', methods=['GET', 'POST'])
 @login_required
@@ -144,4 +166,5 @@ def delete_user(user_id):
         flash('User deleted successfully', 'success')
     except:
         flash('Error deleting user', 'danger')
-    return redirect(url_for('admins.users_list'))    
+    return redirect(url_for('admins.users_list'))
+

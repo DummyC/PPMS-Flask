@@ -4,3 +4,5 @@
 *.code-workspace
 
 __pycache__/
+tmp/
+instance/
