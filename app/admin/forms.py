@@ -12,11 +12,11 @@ class ProjectStatusUpdateForm(FlaskForm):
     
 class CreateUserForm(FlaskForm):
     role_choices = [('Head', 'Head'), ('Administrator', 'Administrator')]
-    department_choices = [('None', 'None'), ('College of Business Management', 'College of Business Management'), ('College of Teacher Education', 'College of Teacher Education'), ('College of Fisheries and Marine Sciences', 'College of Fisheries and Marine Sciences'), ('College of Sciences', 'College of Sciences')]
+    department_choices = [('None', 'None'), ('CBM', 'College of Business Management'), ('CTE', 'College of Teacher Education'), ('CFMS', 'College of Fisheries and Marine Sciences'), ('CoS', 'College of Sciences')]
     
     first_name = StringField('First Name', validators=[DataRequired(), Length(min=2, max=50)])
     last_name = StringField('Last Name', validators=[DataRequired(), Length(min=2, max=50)])
-    department = SelectField('Department Name', choices=department_choices ,validators=[DataRequired(), Length(min=5, max=50)])
+    department = SelectField('Department Name', choices=department_choices ,validators=[DataRequired(), Length(min=2, max=50)])
     email = StringField('Email Address', validators=[DataRequired(), Length(min=5, max=100), Email()])
     
     role = SelectField('Role', choices=role_choices, validators=[DataRequired()])
@@ -34,11 +34,11 @@ class CreateUserForm(FlaskForm):
         
 class UpdateUserForm(FlaskForm):
     role_choices = [('Head', 'Head'), ('Administrator', 'Administrator')]
-    department_choices = [('None', 'None'), ('College of Business Management', 'College of Business Management'), ('College of Teacher Education', 'College of Teacher Education'), ('College of Fisheries and Marine Sciences', 'College of Fisheries and Marine Sciences'), ('College of Sciences', 'College of Sciences')]
+    department_choices = [('None', 'None'), ('CBM', 'College of Business Management'), ('CTE', 'College of Teacher Education'), ('CFMS', 'College of Fisheries and Marine Sciences'), ('CoS', 'College of Sciences')]
     
     first_name = StringField('First Name', validators=[DataRequired(), Length(min=2, max=50)])
     last_name = StringField('Last Name', validators=[DataRequired(), Length(min=2, max=50)])
-    department = SelectField('Department Name', choices=department_choices, validators=[DataRequired(), Length(min=5, max=50)])
+    department = SelectField('Department Name', choices=department_choices, validators=[DataRequired(), Length(min=2, max=50)])
     email = StringField('Email Address', validators=[DataRequired(), Length(min=5, max=100), Email()])
     role = SelectField('Role', choices=role_choices, validators=[DataRequired()])
     

@@ -2,7 +2,8 @@
 *.db
 *.log
 *.code-workspace
+*.xlsx#
+APP_generated.xlsx
 
 __pycache__/
-tmp/
 instance/

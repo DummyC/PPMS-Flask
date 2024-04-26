@@ -36,13 +36,13 @@ def admin_generate_app():
     if not current_user.role == "Administrator":
         return abort(403)
     
-    if os.path.exists("tmp/APP.xlsx"):
-        os.remove("tmp/APP.xlsx")
+    # if os.path.exists("tmp/APP.xlsx"):
+    #     os.remove("tmp/APP.xlsx")
     
     projects = Project.query.order_by(Project.category).filter_by(status="Approved")
     generate_app_xlsx(projects)
     
-    with open("tmp/APP.xlsx", "rb") as file:
+    with open("tmp/APP_generated.xlsx", "rb") as file:
         read = file.read()
         buffer = BytesIO()
         buffer.write(read)
