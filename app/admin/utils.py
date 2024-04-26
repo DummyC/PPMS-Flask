@@ -7,7 +7,7 @@ from datetime import date
     
 def generate_app_xlsx(projects):
     # janky but will have to do
-    workbook = load_workbook("tmp/APP_template.xlsx")
+    workbook = load_workbook("app/tmp/APP_template.xlsx")
     workbook.iso_dates = True
     sheet = workbook.active
     year = date.today().year + 1
@@ -40,7 +40,7 @@ def generate_app_xlsx(projects):
     set_wrap_text(sheet, 'B3:B1000')
     set_wrap_text(sheet, 'I3:I1000')
     
-    workbook.save("tmp/APP_generated.xlsx")
+    workbook.save("app/tmp/APP_generated.xlsx")
     
 def set_border(ws, cell_range):
     thin = Side(border_style="thin", color="000000")

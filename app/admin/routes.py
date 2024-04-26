@@ -41,7 +41,7 @@ def admin_generate_app():
     projects = Project.query.order_by(Project.category).filter(and_(Project.status=="Approved", extract('year', Project.date_needed)==next_year))
     generate_app_xlsx(projects)
     
-    with open("tmp/APP_generated.xlsx", "rb") as file:
+    with open("app/tmp/APP_generated.xlsx", "rb") as file:
         read = file.read()
         buffer = BytesIO()
         buffer.write(read)
