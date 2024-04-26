@@ -5,7 +5,8 @@ from app.models import Project, User
 from app.admin.forms import ProjectStatusUpdateForm, CreateUserForm, UpdateUserForm
 from app.admin.utils import generate_app_xlsx
 from io import BytesIO
-import os
+from datetime import date
+from sqlalchemy import *
 
 admins = Blueprint('admins', __name__)
 
@@ -36,10 +37,8 @@ def admin_generate_app():
     if not current_user.role == "Administrator":
         return abort(403)
     
-    # if os.path.exists("tmp/APP.xlsx"):
-    #     os.remove("tmp/APP.xlsx")
-    
-    projects = Project.query.order_by(Project.category).filter_by(status="Approved")
+    next_year = date.today().year + 1
+    projects = Project.query.order_by(Project.category).filter(and_(Project.status=="Approved", extract('year', Project.date_needed)==next_year))
     generate_app_xlsx(projects)
     
     with open("tmp/APP_generated.xlsx", "rb") as file:

@@ -22,8 +22,7 @@ def generate_app_xlsx(projects):
         count += 1
         project_to_append = [f'P{count}', project.title, project.submitter.department, project.category, project.initial_mode, project.date_needed.date(), project.source, project.budget, project.description]
         sheet.append(project_to_append)
-    
-    
+
     
     table_total = ["", "", "", "", "", "", "TOTAL:", f'=SUM(H3:H{count + 2})']
     sheet.append(table_total)
