@@ -59,8 +59,9 @@
           </nav>
         </header>
       {% endif %}
-        <main role="main" class="container my-auto">
+        <main role="main" class="container">
           <div class="row">
+            {% if not 'login' in request.url_rule.rule %}
               {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                   {% for category, message in messages %}
@@ -71,6 +72,7 @@
                   {% endfor %}
                 {% endif %}
               {% endwith %}
+            {% endif %}
               {% block body %}{% endblock %}
           </div>
         </main>

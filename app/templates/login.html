@@ -5,10 +5,10 @@
 
 {% block body %}
 <section class="mh-100 gradient-form">
-    <div class="container py-5 h-100">
+    <div class="container h-100 fixed-top py-1">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col-xl-10">
-                
+
                 <div class="card rounded-3 text-black">
 
                     <div class="col-lg-6 mx-auto">
@@ -19,6 +19,16 @@
                                     style="width: 150px;" alt="logo">
                                 <h4 class="mt-3 mb-5 pb-1">BISU Project Procurement Monitoring System</h4>
                             </div>
+
+                            {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                            {% for category, message in messages %}
+                            <div class="alert alert-dismissible alert-{{ category }}">
+                                {{ message }}
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                            {% endwith %}
 
                             <form action="" method="POST">
                                 {{ form.hidden_tag() }}
