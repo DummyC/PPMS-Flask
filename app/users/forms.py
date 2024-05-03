@@ -4,22 +4,29 @@ from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationE
 from flask_login import current_user
 from app.models import User
 
+def validate_email(self, email):
+    if email.data != current_user.email:
+        user = User.query.filter_by(email=email.data).first()
+            
+        if user:
+            raise ValidationError('Email already exists in the database')
+        
+def validate_email_none(self, email):
+    user = User.query.filter_by(email=email.data).first()
+    if user is None:
+        raise ValidationError('Email does not exist in the database')
+
 class RegistrationForm(FlaskForm):
     first_name = StringField('First Name', validators=[DataRequired(), Length(min=2, max=50)])
     last_name = StringField('Last Name', validators=[DataRequired(), Length(min=2, max=50)])
     department = StringField('Department Name', validators=[DataRequired(), Length(min=5, max=50)])
-    email = StringField('Email Address', validators=[DataRequired(), Length(min=5, max=100), Email()])
+    email = StringField('Email Address', validators=[DataRequired(), Length(min=5, max=100), Email(), validate_email])
     
     password = PasswordField('Password', validators=[DataRequired()])
     password_confirmation = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     
     submit = SubmitField('Register')
     
-    def validate_email(self, email):
-        user = User.query.filter_by(email=email.data).first()
-        
-        if user:
-            raise ValidationError('Email already exists in the database')
     
     
 class LoginForm(FlaskForm):
@@ -34,20 +41,12 @@ class UpdateAccountForm(FlaskForm):
     first_name = StringField('First Name', validators=[DataRequired(), Length(min=2, max=50)])
     last_name = StringField('Last Name', validators=[DataRequired(), Length(min=2, max=50)])
     department = StringField('Department Name', validators=[DataRequired(), Length(min=5, max=50)])
-    email = StringField('Email Address', validators=[DataRequired(), Length(min=5, max=100), Email()])
+    email = StringField('Email Address', validators=[DataRequired(), Length(min=5, max=100), Email(), validate_email])
     
     password = PasswordField('Password', validators=[DataRequired()])
     
     submit = SubmitField('Update')
     
-    
-
-    def validate_email(self, email):
-        if email.data != current_user.email:
-            user = User.query.filter_by(email=email.data).first()
-            
-            if user:
-                raise ValidationError('Email already exists in the database')
             
 class UpdatePasswordForm(FlaskForm):
     current_password = PasswordField('Current Password', validators=[DataRequired()])
@@ -57,13 +56,10 @@ class UpdatePasswordForm(FlaskForm):
     submit = SubmitField('Update')
     
 class RequestResetForm(FlaskForm):
-    email = StringField('Email Address', validators=[DataRequired(), Length(min=5, max=100), Email()])
+    email = StringField('Email Address', validators=[DataRequired(), Length(min=5, max=100), Email(), validate_email_none])
     submit = SubmitField('Request Password Reset')
 
-    def validate_email(self, email):
-        user = User.query.filter_by(email=email.data).first()
-        if user is None:
-            raise ValidationError('Email does not exist in the database')
+
             
 class PasswordResetForm(FlaskForm):
     password = PasswordField('New Password', validators=[DataRequired()])

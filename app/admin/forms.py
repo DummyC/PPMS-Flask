@@ -3,6 +3,12 @@ from wtforms import SelectField, SubmitField, StringField, PasswordField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from app.models import User
 
+def validate_email(form, email):
+    user = User.query.filter_by(email=email.data).first()
+        
+    if user:
+        raise ValidationError('Email already exists in the database')
+
 class ProjectStatusUpdateForm(FlaskForm):
     status_choices = [('Approved', 'Approved'), ('Rejected', 'Rejected'), ('Pending', 'Pending')]
     
@@ -17,7 +23,7 @@ class CreateUserForm(FlaskForm):
     first_name = StringField('First Name', validators=[DataRequired(), Length(min=2, max=50)])
     last_name = StringField('Last Name', validators=[DataRequired(), Length(min=2, max=50)])
     department = SelectField('Department Name', choices=department_choices ,validators=[DataRequired(), Length(min=2, max=50)])
-    email = StringField('Email Address', validators=[DataRequired(), Length(min=5, max=100), Email()])
+    email = StringField('Email Address', validators=[DataRequired(), Length(min=5, max=100), Email(), validate_email])
     
     role = SelectField('Role', choices=role_choices, validators=[DataRequired()])
     
@@ -26,11 +32,6 @@ class CreateUserForm(FlaskForm):
     
     submit = SubmitField('Register')
     
-    def validate_email(self, email):
-        user = User.query.filter_by(email=email.data).first()
-        
-        if user:
-            raise ValidationError('Email already exists in the database')
         
 class UpdateUserForm(FlaskForm):
     role_choices = [('Head', 'Head'), ('Administrator', 'Administrator')]
@@ -39,16 +40,8 @@ class UpdateUserForm(FlaskForm):
     first_name = StringField('First Name', validators=[DataRequired(), Length(min=2, max=50)])
     last_name = StringField('Last Name', validators=[DataRequired(), Length(min=2, max=50)])
     department = SelectField('Department Name', choices=department_choices, validators=[DataRequired(), Length(min=2, max=50)])
-    email = StringField('Email Address', validators=[DataRequired(), Length(min=5, max=100), Email()])
+    email = StringField('Email Address', validators=[DataRequired(), Length(min=5, max=100), Email(), validate_email])
     role = SelectField('Role', choices=role_choices, validators=[DataRequired()])
     
     submit = SubmitField('Update')
     
-    
-
-    # def validate_email(self, email):
-    #     if email.data != user.email:
-    #         user = User.query.filter_by(email=email.data).first()
-            
-    #         if user:
-    #             raise ValidationError('Email already exists in the database')
