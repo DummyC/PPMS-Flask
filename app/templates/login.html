@@ -1,57 +1,89 @@
-{% extends 'base.html' %} 
+{% extends "base.html" %}
 
 {% block head %}
 {% endblock %}
 
 {% block body %}
-<div class="content-section">
+<section class="mh-100 gradient-form">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-xl-10">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-dismissible alert-{{ category }}">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+                <div class="card rounded-3 text-black">
 
-    <form action="" method="POST">
-        {{ form.hidden_tag() }}
-        <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Log In</legend>
-            <div class="form-group">
-                {{ form.email.label(class="form-control-label") }}
-                {% if form.email.errors %}
-                    {{ form.email(class="form-control form-control-md is-invalid")}}
-                    <div class="invalid-feedback">
-                        {% for error in form.email.errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
+                    <div class="col-lg-6 mx-auto">
+                        <div class="card-body p-md-5 mx-md-4">
+
+                            <div class="text-center">
+                                <img src="{{ url_for('static', filename='images/bisu_logo.png') }}"
+                                    style="width: 150px;" alt="logo">
+                                <h4 class="mt-3 mb-5 pb-1">BISU Project Procurement Monitoring System</h4>
+                            </div>
+
+                            <form action="" method="POST">
+                                {{ form.hidden_tag() }}
+
+                                <div data-mdb-input-init class="form-outline mb-4">
+                                    {{ form.email.label(class="form-control-label") }}
+                                    {% if form.email.errors %}
+                                    {{ form.email(class="form-control form-control-md is-invalid")}}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.email.errors %}
+                                        <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.email(class="form-control form-control-md") }}
+                                    {% endif %}
+                                </div>
+
+                                <div data-mdb-input-init class="form-outline mb-4">
+                                    {{ form.password.label(class="form-control-label") }}
+                                    {% if form.password.errors %}
+                                    {{ form.password(class="form-control form-control-md is-invalid")}}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.password.errors %}
+                                        <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.password(class="form-control form-control-md") }}
+                                    {% endif %}
+                                </div>
+
+                                <div class="form-check mt-2">
+                                    {{ form.remember(class="form-check-input") }}
+                                    {{ form.remember.label(class="form-check-label") }}
+                                </div>
+
+                                <div class="text-center pt-1 mt-3">
+                                    {{ form.submit(class="btn btn-primary mb-3") }}
+                                </div>
+
+                                <div class="text-center pt-1 mb-5 pb-1">
+                                    <a class="text-muted" href="{{ url_for('users.reset_request') }}">Forgot
+                                        password?</a>
+                                </div>
+
+
+                            </form>
+
+                        </div>
                     </div>
-                {% else %}
-                    {{ form.email(class="form-control form-control-md") }}
-                {% endif %}
+
+                </div>
             </div>
-            <div class="form-group">
-                {{ form.password.label(class="form-control-label") }}
-                {% if form.password.errors %}
-                    {{ form.password(class="form-control form-control-md is-invalid")}}
-                    <div class="invalid-feedback">
-                        {% for error in form.password.errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.password(class="form-control form-control-md") }}
-                {% endif %}
-            </div>
-            <div class="form-check mt-2">
-                {{ form.remember(class="form-check-input") }}
-                {{ form.remember.label(class="form-check-label") }}
-            </div>
-        </fieldset>
-        <div class="form-group mt-3">
-            {{ form.submit(class="btn btn-outline-info") }}
-            <small class="text-muted ml-2">
-                <a href="{{ url_for('users.reset_request') }}">Forgot Password?</a>
-            </small>
         </div>
-    </form>
-    <div class="border-top pt-3">
-        <small class="text-muted">
-            Need an account? <a class="ml-2" href="{{ url_for('users.register') }}">Register</a>
-        </small>
     </div>
+</section>
 
 {% endblock %}

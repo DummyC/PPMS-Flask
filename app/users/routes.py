@@ -1,4 +1,4 @@
-from flask import render_template, url_for, flash, redirect, request, Blueprint
+from flask import render_template, url_for, flash, redirect, request, Blueprint, abort
 from flask_login import login_user, current_user, logout_user, login_required
 from app import db, bcrypt
 from app.models import User, Project
@@ -13,10 +13,17 @@ users = Blueprint('users', __name__)
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('projects.projects_list'))
+    
+    # disable register route if an admin account exists
+    
+    admin_user = User.query.filter_by(role="Administrator").first()
+    if(admin_user):
+        return abort(403)
+    
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(first_name=form.first_name.data, last_name=form.last_name.data, department=form.department.data, email=form.email.data, password=hashed_password)
+        user = User(first_name=form.first_name.data, last_name=form.last_name.data, department=form.department.data, email=form.email.data, password=hashed_password, role="Administrator")
         try:
             db.session.add(user)
             db.session.commit()
@@ -34,6 +41,7 @@ def register():
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('projects.projects_list'))
+    rule = request.url_rule
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -48,7 +56,7 @@ def login():
                 return redirect(url_for('projects.projects_list'))
         else:
             flash('Login failed, incorrect email or password', 'danger')
-    return render_template('login.html', title='Login', form=form)
+    return render_template('login.html', title='Login', form=form, rule=rule)
 
 
 @users.route('/logout')

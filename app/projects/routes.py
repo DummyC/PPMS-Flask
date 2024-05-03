@@ -14,6 +14,7 @@ def projects_list():
     
     
 @projects.route('/project/<int:project_id>')
+@login_required
 def project(project_id):
     project = Project.query.get_or_404(project_id)
     if project.submitter != current_user:
@@ -76,6 +77,7 @@ def update_project(project_id):
     return render_template('edit_project.html', title='Update Project', form=form, legend='Update Project')
 
 @projects.route('/project/<int:project_id>/delete', methods=['POST'])
+@login_required
 def delete_project(project_id):
     project = Project.query.get_or_404(project_id)
     if project.submitter != current_user or project.status == "Approved":
