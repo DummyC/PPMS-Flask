@@ -23,8 +23,8 @@
             <title>BISU PPMS</title>
         {% endif %}
     </head>
-    <body>
-        {% if not 'login' in rule.rule %}   
+    <body> 
+      {% if not 'login' in request.url_rule.rule %}
         <header class="site-header">
           <nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-top" data-bs-theme="dark">
             <div class="container">
@@ -35,31 +35,31 @@
               </button>
               <div class="collapse navbar-collapse" id="navbarToggle">
                 <div class="navbar-nav mr-auto">
-                  {% if current_user.role == "Administrator" %}
-                  <a class="nav-item nav-link" href="{{ url_for('admins.admin_dashboard') }}">Admin</a>
-                  <a class="nav-item nav-link" href="{{ url_for('admins.admin_projects') }}">Projects</a>
-                  <a class="nav-item nav-link" href="{{ url_for('admins.users_list') }}">Users</a>
-                  {% else %}
-                  <a class="nav-item nav-link" href="{{ url_for('main.dashboard') }}">Dashboard</a>
-                  <a class="nav-item nav-link" href="{{ url_for('projects.projects_list') }}">Projects</a>
-                  {% endif %}
-                </div>
-                <!-- Navbar Right Side -->
-                <div class="navbar-nav ml-auto">
-                  {% if current_user.is_authenticated %}
-                  <a class="nav-item nav-link" href="{{ url_for('users.account') }}">Account</a>
-                  <a class="nav-item nav-link" href="{{ url_for('users.logout') }}">Logout</a>
-                  {% else %}
-                    <a class="nav-item nav-link" href="{{ url_for('users.login') }}">Login</a>
-                    <a class="nav-item nav-link" href="{{ url_for('users.register') }}">Register</a>
-                  {% endif %}
+                    {% if current_user.role == "Administrator" %}
+                    <a class="nav-item nav-link" href="{{ url_for('admins.admin_dashboard') }}">Admin</a>
+                    <a class="nav-item nav-link" href="{{ url_for('admins.admin_projects') }}">Projects</a>
+                    <a class="nav-item nav-link" href="{{ url_for('admins.users_list') }}">Users</a>
+                    {% else %}
+                    <a class="nav-item nav-link" href="{{ url_for('main.dashboard') }}">Dashboard</a>
+                    <a class="nav-item nav-link" href="{{ url_for('projects.projects_list') }}">Projects</a>
+                    {% endif %}
+                  </div>
+                  <!-- Navbar Right Side -->
+                  <div class="navbar-nav ml-auto">
+                    {% if current_user.is_authenticated %}
+                    <a class="nav-item nav-link" href="{{ url_for('users.account') }}">Account</a>
+                    <a class="nav-item nav-link" href="{{ url_for('users.logout') }}">Logout</a>
+                    {% else %}
+                      <a class="nav-item nav-link" href="{{ url_for('users.login') }}">Login</a>
+                      <a class="nav-item nav-link" href="{{ url_for('users.register') }}">Register</a>
+                    {% endif %}
                 </div>
               </div>
             </div>
           </nav>
         </header>
-        {% endif %}
-        <main role="main" class="container">
+      {% endif %}
+        <main role="main" class="container my-auto">
           <div class="row">
               {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
