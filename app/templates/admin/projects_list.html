@@ -39,10 +39,10 @@
 
 <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
 
-<div class="container-fluid px-5">
+<div>
   <h1>Projects</h1>
   <a href="{{ url_for('admins.admin_generate_app') }}" class="btn btn-outline-success m-2">Generate APP</a>
-  <div id="table"></div>
+  <div id="table" class="position-absolute"></div>
 </div>
 
 <!-- help, how do i make row clickable -->
@@ -81,6 +81,8 @@
     ],
     search: true,
     sort: true,
+    width: '100%',
+    height: '100%',
     style: {
       table: {
         'font-size': '14px'

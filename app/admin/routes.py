@@ -12,7 +12,7 @@ admins = Blueprint('admins', __name__)
 
 # dashboard routes
 
-@admins.route('/admin', methods=['GET', 'POST'])
+@admins.route('/admin/dashboard', methods=['GET', 'POST'])
 @login_required
 def admin_dashboard():
     if not current_user.role == "Administrator":
