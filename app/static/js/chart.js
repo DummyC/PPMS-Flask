@@ -2,19 +2,19 @@ var ctx = document.getElementById('doughnut').getContext('2d');
 var myChart = new Chart(ctx, {
     type: 'doughnut',
     data: {
-        labels: ['Approved', 'Rejected', 'Pending'],
+        labels: ['Approved', 'Pending', 'Rejected'],
         datasets: [{
             label: 'Project Summary',
-            data: [1556, 7444, 4484],
+            data: [${approved}, ${pending}, ${rejected}],
             backgroundColor: [
                 'rgba(41, 155, 99, 1)',
-                'rgba(255, 0, 0, 1)',
                 'rgba(255, 206, 86, 1)',
+                'rgba(255, 0, 0, 1)',
             ],
             borderColor: [
                 'rgba(41, 155, 99, 1)',
-                'rgba(255, 0, 0, 1)',
                 'rgba(255, 206, 86, 1)',
+                'rgba(255, 0, 0, 1)',
             ],
             borderWidth: 1
         }]

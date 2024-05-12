@@ -10,21 +10,46 @@
             <div class="inner-container">
                 <div class="department">
                     <h3>CBM</h3>
-                    <p class="budget">₱100,000</p>
+                    <p class="budget">₱ 
+                        {% if cbm_query.first().total_budget == null %}
+                        {{ 0 }}
+                        {% else %}
+                        {{ cbm_query.first().total_budget }}
+                        {% endif %}
+                    </p>
                 </div>
                 <div class="department">
                     <h3>CTE</h3>
-                    <p class="budget">₱150,000</p>
+                    <p class="budget">₱ 
+                        {% if cte_query.first().total_budget == null %}
+                        {{ 0 }}
+                        {% else %}
+                        {{ cte_query.first().total_budget }}
+                        {% endif %}
+                    </p>
                 </div>
                 <div class="department">
                     <h3>CFMS</h3>
-                    <p class="budget">₱120,000</p>
+                    <p class="budget">₱ 
+                        {% if cfms_query.first().total_budget == null %}
+                        {{ 0 }}
+                        {% else %}
+                        {{ cfms_query.first().total_budget }}
+                        {% endif %}
+                    </p>
                 </div>
                 <div class="department">
                     <h3>CoS</h3>
-                    <p class="budget">₱80,000</p>
+                    <p class="budget">₱ 
+                        {% if cos_query.first().total_budget == null %}
+                        {{ 0 }}
+                        {% else %}
+                        {{ cos_query.first().total_budget }}
+                        {% endif %}
+                    </p>
                 </div>
             </div>
+
             <div class="total-budget">
                 <h3>Total:</h3>
                 <p id="total-amount"></p>
@@ -36,20 +61,46 @@
             <div class="inner-container">
                 <div class="department">
                     <h3>CBM</h3>
-                    <p class="project">552</p>
+                    <p class="project">
+                        {% if cbm_query.first().projects_count == null %}
+                        {{ 0 }}
+                        {% else %}
+                        {{ cbm_query.first().projects_count }}
+                        {% endif %}
+                    </p>
                 </div>
                 <div class="department">
                     <h3>CTE</h3>
-                    <p class="project">556</p>
+                    <p class="project">
+                        {% if cte_query.first().projects_count == null %}
+                        {{ 0 }}
+                        {% else %}
+                        {{ cte_query.first().projects_count }}
+                        {% endif %}
+                    </p>
                 </div>
                 <div class="department">
                     <h3>CFMS</h3>
-                    <p class="project">74828</p>
+                    <p class="project">
+                        {% if cfms_query.first().projects_count == null %}
+                        {{ 0 }}
+                        {% else %}
+                        {{ cfms_query.first().projects_count }}
+                        {% endif %}
+                    </p>
                 </div>
                 <div class="department">
                     <h3>CoS</h3>
-                    <p class="project">{{ cos_count }}</p>
+                    <p class="project">
+                        {% if cos_query.first().projects_count == null %}
+                        {{ 0 }}
+                        {% else %}
+                        {{ cos_query.first().projects_count }}
+                        {% endif %}
+                    </p>
                 </div>
+
+                
             </div>
             <div class="total-project">
                 <h3>Total:</h3>
@@ -70,7 +121,7 @@
                 totalBudget += budget;
             });
         
-            document.getElementById("total-amount").textContent = "₱" + totalBudget.toLocaleString();
+            document.getElementById("total-amount").textContent = "₱ " + totalBudget.toLocaleString();
         
             var projectElements = document.querySelectorAll(".project");
             var totalProject = 0;
@@ -91,40 +142,106 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"></script>
-    <script src="{{ url_for('static', filename='js/chart.js') }}"></script>
+    <script>
+        
+        var ctx = document.getElementById('doughnut').getContext('2d');
+
+var myChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Approved', 'Pending', 'Rejected'],
+        datasets: [{
+            label: 'Project Summary',
+            data: [
+            {% if a_query.first().projects_count == null %}
+            {{ 0 }}
+            {% else %}
+            {{ a_query.first().projects_count }}
+            {% endif %},
+            {% if p_query.first().projects_count == null %}
+            {{ 0 }}
+            {% else %}
+            {{ p_query.first().projects_count }}
+            {% endif %},
+            {% if r_query.first().projects_count == null %}
+            {{ 0 }}
+            {% else %}
+            {{ r_query.first().projects_count }}
+            {% endif %},
+            ],
+            backgroundColor: [
+                'rgba(41, 155, 99, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(255, 0, 0, 1)',
+            ],
+            borderColor: [
+                'rgba(41, 155, 99, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(255, 0, 0, 1)',
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+              display: true,
+              position: 'right'
+            }
+          }
+    }
+});
+
+    </script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"></script> -->
+    <!-- <script src="{{ url_for('static', filename='js/chart.js') }}"></script> -->
+
 
 
     <div class="container-2">
         <h2>User Contributions</h2>
-        <ul id="user-contributions"></ul>
+        <ul id="user-contributions">
+        </ul>
 
+        <table class="table table-hover border border-primary">
+            <thead>
+                <tr class="table-primary">
+                    <th>User Name</th>
+                    <th>Total Projects</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in c_query %}
+                <tr>
+                    <td>{{user.last_name}}, {{user.first_name}}</td>
+                    <td>{{user.projects_count}}</td>
+                </tr>
 
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 
 
-    <script>
+    <!-- <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const users = [
-         {name: "user", project: 90},
-         {name: "user2", project: 90},
-         {name: "user3", project: 90},
-        ];
+        
 
         function displayUser(users){
             const userList = document.getElementById("user-contributions");
 
             userList.innerHTML = "";
-            users.forEach(user => {
-
+            {% for user in c_query %}
                 const listItem = document.createElement("li");
-                listItem.innerHTML = `<span>Name:</span> ${user.name}, <span>Projects:</span> ${user.project}`;
+                listItem.innerHTML = `<span>Name:</span> {{user.last_name}}, {{user.first_name}} - <span>Projects:</span> {{user.projects_count}}`;
                 userList.appendChild(listItem);
-            });
+            {% endfor %}
         }
         displayUser(users);        
     }); 
         
-    </script>
+    </script> -->
 
 {% endblock %}
 

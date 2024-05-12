@@ -21,9 +21,48 @@ def admin_dashboard():
     users = User.query.order_by(User.last_name).all()
     # cos_projects = Project.query.order_by(Project.date_created).filter(submitter == "CoS")
     
-    cos_count = db.session.query(Project.id).count()
+    count_and_budget_query = db.session.query(User.department, 
+                      func.sum(Project.budget).label('total_budget'), 
+                      func.count(Project.id).label('projects_count') 
+                      ).join(Project).group_by(User.department) 
     
-    return render_template('admin/dashboard.html', title='Admin Dashboard', users = users, cos_count = cos_count)
+    cbm_query = db.session.query(User.department, 
+                      func.sum(Project.budget).label('total_budget'), 
+                      func.count(Project.id).label('projects_count') 
+                      ).join(Project).group_by(User.department).filter(User.department=="CBM")
+    
+    cte_query = db.session.query(User.department, 
+                      func.sum(Project.budget).label('total_budget'), 
+                      func.count(Project.id).label('projects_count') 
+                      ).join(Project).group_by(User.department).filter(User.department=="CTE")
+    
+    cfms_query = db.session.query(User.department, 
+                      func.sum(Project.budget).label('total_budget'), 
+                      func.count(Project.id).label('projects_count') 
+                      ).join(Project).group_by(User.department).filter(User.department=="CFMS")
+    
+    cos_query = db.session.query(User.department, 
+                      func.sum(Project.budget).label('total_budget'), 
+                      func.count(Project.id).label('projects_count') 
+                      ).join(Project).group_by(User.department).filter(User.department=="CoS")
+    
+    approved_status_query = db.session.query(Project.status,
+                      func.count(Project.id).label('projects_count') 
+                        ).join(User).group_by(Project.status).filter(Project.status=="Approved")
+    
+    pending_status_query = db.session.query(Project.status,
+                      func.count(Project.id).label('projects_count') 
+                        ).join(User).group_by(Project.status).filter(Project.status=="Pending")
+    
+    rejected_status_query = db.session.query(Project.status,
+                      func.count(Project.id).label('projects_count') 
+                        ).join(User).group_by(Project.status).filter(Project.status=="Rejected")
+    
+    contribution_query = db.session.query(User.last_name, User.first_name,
+                      func.count(Project.id).label('projects_count') 
+                      ).join(Project).group_by(User.last_name)
+    
+    return render_template('admin/dashboard.html', title='Admin Dashboard', users = users, c_query = contribution_query, a_query = approved_status_query, p_query = pending_status_query, r_query = rejected_status_query, cbm_query = cbm_query, cte_query = cte_query, cfms_query = cfms_query, cos_query = cos_query)
 
 # project routes
 
