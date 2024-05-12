@@ -43,6 +43,7 @@
   <h1>Projects</h1>
   <a href="{{ url_for('admins.admin_generate_app') }}" class="btn btn-outline-success m-2">Generate APP</a>
   <div id="table" class="position-absolute"></div>
+  <div class="box"></div>
 </div>
 
 <!-- help, how do i make row clickable -->
@@ -81,12 +82,11 @@
     ],
     search: true,
     sort: true,
-    width: '95%',
-    height: '100%',
+    width: '97%',
     style: {
       table: {
         'font-size': '14px',
-        'margin-right': '5rem'
+        'margin-right': '4rem'
       }
     },
     pagination: true,

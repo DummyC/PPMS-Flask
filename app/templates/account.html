@@ -45,19 +45,6 @@
                         {% endif %}
                     </div>
                     <div class="form-group">
-                        {{ form.department.label(class="form-control-label") }}
-                        {% if form.department.errors %}
-                            {{ form.department(class="form-control form-control-md is-invalid")}}
-                            <div class="invalid-feedback">
-                                {% for error in form.department.errors %}
-                                    <span>{{ error }}</span>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            {{ form.department(class="form-control form-control-md") }}
-                        {% endif %}
-                    </div>
-                    <div class="form-group">
                         {{ form.email.label(class="form-control-label") }}
                         {% if form.email.errors %}
                             {{ form.email(class="form-control form-control-md is-invalid")}}

@@ -43,6 +43,7 @@
   <h1>Projects</h1>
   <a href="{{ url_for('projects.create_project') }}" class="btn btn-outline-success m-2">New Project</a>
   <div id="table" class="position-absolute"></div>
+  <div class="box"></div>
 </div>
 
 <!-- help, how do i make row clickable -->
@@ -81,11 +82,11 @@
     ],
     search: true,
     sort: true,
-    width: 80%,
+    width: 97%,
     style: {
       table: {
         'font-size': '14px',
-        'margin-right': '5rem'
+        'margin-right': '4rem'
       }
     },
     pagination: true,
