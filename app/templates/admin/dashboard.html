@@ -4,7 +4,128 @@
 {% endblock %}
 
 {% block body %}
-<h1>Admin Dashboard</h1> 
+    <div class="container">
+        <div class="outer-container">
+            <h2>BUDGET</h2>
+            <div class="inner-container">
+                <div class="department">
+                    <h3>CBM</h3>
+                    <p class="budget">₱100,000</p>
+                </div>
+                <div class="department">
+                    <h3>CTE</h3>
+                    <p class="budget">₱150,000</p>
+                </div>
+                <div class="department">
+                    <h3>CFMS</h3>
+                    <p class="budget">₱120,000</p>
+                </div>
+                <div class="department">
+                    <h3>CoS</h3>
+                    <p class="budget">₱80,000</p>
+                </div>
+            </div>
+            <div class="total-budget">
+                <h3>Total:</h3>
+                <p id="total-amount"></p>
+            </div>
+        </div>
+
+        <div class="outer-container">
+            <h2>PROJECTS</h2>
+            <div class="inner-container">
+                <div class="department">
+                    <h3>CBM</h3>
+                    <p class="project">552</p>
+                </div>
+                <div class="department">
+                    <h3>CTE</h3>
+                    <p class="project">556</p>
+                </div>
+                <div class="department">
+                    <h3>CFMS</h3>
+                    <p class="project">74828</p>
+                </div>
+                <div class="department">
+                    <h3>CoS</h3>
+                    <p class="project">{{ cos_count }}</p>
+                </div>
+            </div>
+            <div class="total-project">
+                <h3>Total:</h3>
+                <p id="total-project-amount"></p>
+            </div>
+        </div>
+    </div>
+    
+<!-- display the effing total budget and project ugu-->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            
+            var budgetElements = document.querySelectorAll(".budget");
+            var totalBudget = 0;
+
+            budgetElements.forEach(function(element) {
+                var budget = parseInt(element.textContent.replace("₱", "").replace(",", ""));
+                totalBudget += budget;
+            });
+        
+            document.getElementById("total-amount").textContent = "₱" + totalBudget.toLocaleString();
+        
+            var projectElements = document.querySelectorAll(".project");
+            var totalProject = 0;
+        
+            projectElements.forEach(function(element) {
+                var project = parseInt(element.textContent.replace(",", ""));
+                totalProject += project;
+            });
+        
+            document.getElementById("total-project-amount").textContent = totalProject.toLocaleString();
+        });
+        
+    </script>
+        
+    <div class="chart" id="doughnut-chart">
+        <h2>PROJECT SUMMARY</h2>
+        <canvas id="doughnut" width="300" height="200"></canvas>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"></script>
+    <script src="{{ url_for('static', filename='js/chart.js') }}"></script>
+
+
+    <div class="container-2">
+        <h2>User Contributions</h2>
+        <ul id="user-contributions"></ul>
+
+
+    </div>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const users = [
+         {name: "user", project: 90},
+         {name: "user2", project: 90},
+         {name: "user3", project: 90},
+        ];
+
+        function displayUser(users){
+            const userList = document.getElementById("user-contributions");
+
+            userList.innerHTML = "";
+            users.forEach(user => {
+
+                const listItem = document.createElement("li");
+                listItem.innerHTML = `<span>Name:</span> ${user.name}, <span>Projects:</span> ${user.project}`;
+                userList.appendChild(listItem);
+            });
+        }
+        displayUser(users);        
+    }); 
+        
+    </script>
+
 {% endblock %}
 
 {% block table %}

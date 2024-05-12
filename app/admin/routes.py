@@ -18,7 +18,12 @@ def admin_dashboard():
     if not current_user.role == "Administrator":
         return abort(403)
     
-    return render_template('admin/dashboard.html', title='Admin Dashboard')
+    users = User.query.order_by(User.last_name).all()
+    # cos_projects = Project.query.order_by(Project.date_created).filter(submitter == "CoS")
+    
+    cos_count = db.session.query(Project.id).count()
+    
+    return render_template('admin/dashboard.html', title='Admin Dashboard', users = users, cos_count = cos_count)
 
 # project routes
 
