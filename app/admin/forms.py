@@ -40,7 +40,7 @@ class UpdateUserForm(FlaskForm):
     first_name = StringField('First Name', validators=[DataRequired(), Length(min=2, max=50)])
     last_name = StringField('Last Name', validators=[DataRequired(), Length(min=2, max=50)])
     department = SelectField('Department Name', choices=department_choices, validators=[DataRequired(), Length(min=2, max=50)])
-    email = StringField('Email Address', validators=[DataRequired(), Length(min=5, max=100), Email(), validate_email])
+    email = StringField('Email Address', validators=[DataRequired(), Length(min=5, max=100), Email()])
     role = SelectField('Role', choices=role_choices, validators=[DataRequired()])
     
     submit = SubmitField('Update')
