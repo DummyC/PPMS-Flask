@@ -40,7 +40,6 @@ class LoginForm(FlaskForm):
 class UpdateAccountForm(FlaskForm):
     first_name = StringField('First Name', validators=[DataRequired(), Length(min=2, max=50)])
     last_name = StringField('Last Name', validators=[DataRequired(), Length(min=2, max=50)])
-    department = StringField('Department Name', validators=[DataRequired(), Length(min=5, max=50)])
     email = StringField('Email Address', validators=[DataRequired(), Length(min=5, max=100), Email(), validate_email])
     
     password = PasswordField('Password', validators=[DataRequired()])

@@ -74,7 +74,6 @@ def account():
         if bcrypt.check_password_hash(current_user.password, form.password.data):
             current_user.first_name = form.first_name.data
             current_user.last_name = form.last_name.data
-            current_user.department = form.department.data
             current_user.email = form.email.data
         
         try:
@@ -87,7 +86,6 @@ def account():
     elif request.method == 'GET':
         form.first_name.data = current_user.first_name
         form.last_name.data = current_user.last_name
-        form.department.data = current_user.department
         form.email.data = current_user.email
     return render_template('account.html', title='Account', form=form)
 
